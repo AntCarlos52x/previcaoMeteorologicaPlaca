@@ -4,7 +4,8 @@
 #include <string.h>
 #include <stdio.h>
 
-#define LED_PIN 12    
+#define LED_PIN_GREEN 11 // Verde
+#define LED_PIN_RED 13 // Vermelho
 #define WIFI_SSID "EDNA"
 #define WIFI_PASS "wwork197"
 
@@ -19,10 +20,12 @@ static err_t http_callback(void *arg, struct tcp_pcb *tpcb, struct pbuf *p, err_
     // Processa a requisição HTTP
     char *request = (char *)p->payload;
 
-    if (strstr(request, "LED_ON")) {
-        gpio_put(LED_PIN, 1);
-    } else if (strstr(request, "LED_OFF")) {
-        gpio_put(LED_PIN, 0);
+    if (strstr(request, "LED_GREEN")) {
+        gpio_put(LED_PIN_RED, 0);
+        gpio_put(LED_PIN_GREEN, 1);
+    } else if (strstr(request, "LED_RED")) {
+        gpio_put(LED_PIN_GREEN, 0);
+        gpio_put(LED_PIN_RED, 1);
     } 
 
     // Libera o buffer recebido
@@ -84,8 +87,10 @@ int main() {
     printf("Wi-Fi conectado!\n");
 
     // Configura o LED como saída
-    gpio_init(LED_PIN);
-    gpio_set_dir(LED_PIN, GPIO_OUT);
+    gpio_init(LED_PIN_GREEN);
+    gpio_init(LED_PIN_RED);
+    gpio_set_dir(LED_PIN_GREEN, GPIO_OUT);
+    gpio_set_dir(LED_PIN_RED, GPIO_OUT);
 
     // Inicia o servidor HTTP
     start_http_server();
